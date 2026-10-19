@@ -339,7 +339,9 @@ pub fn parse_credential_flag(spec: &str) -> std::result::Result<CredentialBindin
                             .into(),
                     );
                 }
-                set_header = Some(header.to_string());
+                // Header names are case-insensitive; store the lowercase form
+                // the policy requires, as hosts are above.
+                set_header = Some(header.to_ascii_lowercase());
             }
             modifier => {
                 return Err(format!(
@@ -395,7 +397,7 @@ mod tests {
     #[test]
     fn credential_flag_sets_a_header_from_the_complete_host_value() {
         let binding = parse_credential_flag(
-            "github=GITHUB_AUTH@github.com,*.github.com:set-header=authorization",
+            "github=GITHUB_AUTH@github.com,*.github.com:set-header=Authorization",
         )
         .unwrap();
 
